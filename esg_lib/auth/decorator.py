@@ -1,8 +1,8 @@
 from functools import wraps
 from flask import request, g
 
-from .azure_ad_auth import AzureADAuth
-from .auth_helper import AuthHelper
+from esg_lib.auth.azure_ad_auth import AzureADAuth
+from esg_lib.auth.auth_helper import AuthHelper
 
 def token_required(f):
     @wraps(f)
