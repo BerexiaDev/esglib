@@ -3,6 +3,7 @@ from flask import Blueprint, request, g
 
 from esg_lib.audit_logger.models.AuditLog import AuditLog
 from esg_lib.audit_logger.utils import get_json_body, get_only_changed_values_and_id, get_action, get_primary_key_value
+from esg_lib.constants import IGNORE_PATHS
 
 
 SUCCESS_STATUS_CODES = [200, 201, 204]
@@ -41,7 +42,7 @@ class AuditBlueprint(Blueprint):
         table_name = g.get("table_name")
         endpoint = request.path
 
-        if not table_name or table_name == AUDIT_COLLECTION_NAME or endpoint == "/":
+        if not table_name or table_name == AUDIT_COLLECTION_NAME or endpoint in IGNORE_PATHS:
             return response
 
         primary_key = PRIMARY_KEY_MAPPING.get(table_name, "name")
