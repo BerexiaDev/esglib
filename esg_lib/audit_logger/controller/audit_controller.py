@@ -17,6 +17,6 @@ class Audit(Resource):
         parser = get_default_paginated_request_parse()
         parser.remove_argument("search_value")
         parser.add_argument("table_names", location="args")
-        parser.add_argument("actions", location="args")
+        parser.add_argument("actions", location="args", default=[])
         args = parser.parse_args()
         return get_audit_logs_paginated(args)
