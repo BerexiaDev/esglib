@@ -1,4 +1,4 @@
-from flask_restx import Resource, reqparse
+from flask_restx import Resource
 
 from esg_lib.audit_logger.service.audit_service import get_audit_logs_paginated
 from esg_lib.dto import AuditDto
