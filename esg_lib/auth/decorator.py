@@ -50,7 +50,7 @@ def token_required(f):
                 
 
         except Exception as e:
-            c
+            return {"status": "fail", "message": str(e)}, 401
         
         return f(*args, **kwargs)
     return decorated_function
