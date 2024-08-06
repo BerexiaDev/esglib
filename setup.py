@@ -4,7 +4,9 @@ setup(
     name='esg_lib',
     version='0.1',
     packages=find_packages(),
-    install_requires=[],
+    install_requires=[
+        "cryptography==42.0.8"
+    ],
     author='Myrza Nurmanbetov',
     author_email='hakedhacked0@gmail.com',
     description='ESG Global Library',
