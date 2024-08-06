@@ -1,6 +1,5 @@
 from functools import wraps
 from flask import request, g
-import sys
 from esg_lib.auth.external_auth import ExternalAuth
 from esg_lib.constants import IGNORE_PATHS
 from esg_lib.auth.azure_ad_auth import AzureADAuth
@@ -14,13 +13,8 @@ def token_required(f):
         try:
             # To validate external users token
             ext_auth = request.headers.get("X-External-Auth", None)
-            authori = request.headers.get("Authorization", None)
-            print(f"authori: {authori}", file=sys.stderr)
-            print(f"ext_auth: {ext_auth}", file=sys.stderr)
-
             if ext_auth == "jwt":
                 decoded_token = ExternalAuth.decode_token()
-                print(f"decoded_token: {decoded_token}", file=sys.stderr)
 
                 if not decoded_token:
                     return {'status': 'fail','message': 'Invalid Token.'}, 401
