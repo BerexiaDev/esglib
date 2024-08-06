@@ -5,7 +5,12 @@ setup(
     version='0.1',
     packages=find_packages(),
     install_requires=[
-        "cryptography==42.0.8"
+        "cryptography==42.0.8",
+        "flask-restx==1.1.0",
+        "inject==5.0.0",
+        "cryptography==42.0.8",
+        "python-dotenv==1.0.1",
+        "PyJWT==2.8.0",
     ],
     author='Myrza Nurmanbetov',
     author_email='hakedhacked0@gmail.com',
