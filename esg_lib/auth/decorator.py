@@ -1,6 +1,6 @@
 from functools import wraps
 from flask import request, g
-
+import sys
 from esg_lib.auth.external_auth import ExternalAuth
 from esg_lib.constants import IGNORE_PATHS
 from esg_lib.auth.azure_ad_auth import AzureADAuth
