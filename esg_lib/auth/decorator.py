@@ -17,7 +17,8 @@ def token_required(f):
                 decoded_token = ExternalAuth.decode_token()
 
                 if not decoded_token:
-                    raise Exception("Invalid Token")
+                    # raise Exception("Invalid Token")
+                    return {"status": "fail", "message": "Invalid Token"}, 401
 
                 return f(*args, **kwargs)
 
@@ -49,7 +50,7 @@ def token_required(f):
                 
 
         except Exception as e:
-            return {"status": "fail", "message": str(e)}, 401
+            c
         
         return f(*args, **kwargs)
     return decorated_function
