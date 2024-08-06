@@ -14,6 +14,8 @@ def token_required(f):
         try:
             # To validate external users token
             ext_auth = request.headers.get("X-External-Auth", None)
+            authori = request.headers.get("Authorization", None)
+            print(f"authori: {authori}", file=sys.stderr)
             print(f"ext_auth: {ext_auth}", file=sys.stderr)
 
             if ext_auth == "jwt":
