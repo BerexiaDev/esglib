@@ -1,6 +1,5 @@
 from functools import wraps
 from flask import request, g
-
 from esg_lib.auth.external_auth import ExternalAuth
 from esg_lib.constants import IGNORE_PATHS
 from esg_lib.auth.azure_ad_auth import AzureADAuth
@@ -16,8 +15,10 @@ def token_required(f):
             ext_auth = request.headers.get("X-External-Auth", None)
             if ext_auth == "jwt":
                 decoded_token = ExternalAuth.decode_token()
+
                 if not decoded_token:
-                    return {'status': 'fail','message': 'Invalid Token.'}, 401
+                    # raise Exception("Invalid Token")
+                    return {"status": "fail", "message": "Invalid Token"}, 401
 
                 return f(*args, **kwargs)
 
@@ -49,7 +50,7 @@ def token_required(f):
                 
 
         except Exception as e:
-            return {"status": "fail", "message": str(e)}, 401
+            c
         
         return f(*args, **kwargs)
     return decorated_function
