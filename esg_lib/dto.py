@@ -16,6 +16,11 @@ class NullableFloat(fields.Float):
     __schema_example__ = "nullable float"
 
 
+class NullableBoolean(fields.Boolean):
+    __schema_type__ = ["boolean", "null"]
+    __schema_example__ = "nullable boolean"
+
+
 class AuditDto:
     api = Namespace("Audit")
 
