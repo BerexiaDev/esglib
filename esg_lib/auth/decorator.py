@@ -14,8 +14,12 @@ def token_required(f):
         try:
             # To validate external users token
             ext_auth = request.headers.get("X-External-Auth", None)
+            print(f"ext_auth: {ext_auth}", file=sys.stderr)
+
             if ext_auth == "jwt":
                 decoded_token = ExternalAuth.decode_token()
+                print(f"decoded_token: {decoded_token}", file=sys.stderr)
+
                 if not decoded_token:
                     return {'status': 'fail','message': 'Invalid Token.'}, 401
 
