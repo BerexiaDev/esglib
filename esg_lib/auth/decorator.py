@@ -17,7 +17,7 @@ def token_required(f):
                 decoded_token = ExternalAuth.decode_token()
 
                 if not decoded_token:
-                    raise ValueError("Invalid Token")
+                    raise Exception("Invalid Token")
 
                 return f(*args, **kwargs)
 
