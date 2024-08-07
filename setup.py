@@ -11,6 +11,7 @@ setup(
         "cryptography==42.0.8",
         "python-dotenv==0.21.1",
         "PyJWT==2.8.0",
+        "aenum==3.1.15",
     ],
     author='Myrza Nurmanbetov',
     author_email='hakedhacked0@gmail.com',

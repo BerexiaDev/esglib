@@ -1,70 +1,54 @@
 import inject
 from flask_pymongo import PyMongo
-from flask import g
+from esg_lib.convertible import default_field
 
 from esg_lib.utils import generate_id
 
 
 class Document:
+    IGNORED_FIELDS = []
+
     __TABLE__ = None
-    _id = None
-
-    def __init__(self, **kwargs):
-        g.table_name = self.__TABLE__
-        for k, v in kwargs.items():
-            self.__setattr__(k, v)
-
-    @property
-    def id(self):
-        return self._id
-
-    @id.setter
-    def id(self, value):
-        self._id = value
+    id: str = default_field()
 
     def db(self):
         mongo = inject.instance(PyMongo)
         return mongo.db[self.__TABLE__]
 
     def save(self):
-        if not self._id:
-            self._id = generate_id()
-        self._id = self.db().save(self.to_dict())
+        _id = self.id
+        if not _id:
+            _id = generate_id()
+        save_dict = self.to_dict(ignore_date_time=True)
+        save_dict.pop("id", None)
+        save_dict["_id"] = _id
+        self.id = self.db().save(save_dict)
         return self
 
     def save_all(self, items, **kwargs):
         kwargs = kwargs or {}
-        items = [{"_id": generate_id(), **item, **kwargs} for item in items]
+        cls = type(self)
+        item_instances = [cls.from_dict({**item, **kwargs}) for item in items]
+        items = [{"_id": generate_id(), **item.to_dict(ignore_date_time=True)} for item in item_instances]
+        [item.pop("id", None) for item in items]
         self.db().insert_many(items)
 
     def load(self, query=None):
         if not query:
-            query = {"_id": self._id}
-        self.from_dict(self.db().find_one(query))
-        return self
+            query = {"_id": self.id}
+        cls = type(self)
+        return cls.from_dict(self.db().find_one(query))
 
     def delete(self, query=None):
-        if self._id:
+        if self.id:
             if not query:
-                query = {"_id": self._id}
+                query = {"_id": self.id}
             self.db().remove(query)
         return self
 
-    def to_dict(self):
-        return self.__dict__
-
-    def from_dict(self, d):
-        if d:
-            self.__dict__ = d
-        else:
-            self._id = None
-        return self
-
     @classmethod
-    def get_all(cls, query=None):
-        if query is None:
-            query = {}
-        return [cls(**r) for r in cls().db().find(query)]
+    def get_all(cls, query={}):
+        return [cls.from_dict(r) for r in cls().db().find(query)]
 
     @classmethod
     def drop(cls):
@@ -74,9 +58,3 @@ class Document:
     def delete_all(cls, query):
         if query:
             cls().db().delete_many(query)
-
-    def update(self, data: dict):
-        self.db().update_one({"_id": self._id}, {"$set": data})
-        # for k, v in data.items():
-        #     self.__setattr__(k, v)
-        # return self
