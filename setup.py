@@ -9,7 +9,7 @@ setup(
         "flask-restx==1.1.0",
         "inject==5.0.0",
         "cryptography==42.0.8",
-        "python-dotenv==1.0.1",
+        "python-dotenv==0.21.1",
         "PyJWT==2.8.0",
     ],
     author='Myrza Nurmanbetov',
