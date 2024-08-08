@@ -5,28 +5,43 @@ from flask_restx import fields
 
 from esg_lib.convertible import _is_convertible
 
+DEFAULT_MAPPING = {
+    "bool": "nullable boolean",
+    "str": "nullable string",
+    "int": "nullable integer",
+    "float": "nullable float",
+    "datetime": "nullable datetime",
+    "Enum": "nullable enum"
+}
+
 
 def get_restx_field(field_type, is_required, default_value):
+    meta_data = {
+        "required": is_required,
+    }
+
+    if DEFAULT_MAPPING.get(field_type.__name__) or issubclass(field_type, Enum):
+        if issubclass(field_type, Enum) and default_value:
+            default_value = default_value.value
+        if default_value is None and not is_required:
+            default_value = DEFAULT_MAPPING.get(field_type.__name__)
+        if default_value:
+            meta_data["default"] = default_value
+
     if field_type == bool:
-        default_value = default_value or "nullable boolean"
-        return fields.Boolean(default=default_value, required=is_required)
+        return fields.Boolean(**meta_data)
     elif field_type == str:
-        default_value = default_value or "nullable string"
-        return fields.String(default=default_value, required=is_required)
+        return fields.String(**meta_data)
     elif field_type == int:
-        default_value = default_value or "nullable integer"
-        return fields.String(default=default_value, required=is_required)
+        return fields.String(**meta_data)
     elif field_type == float:
-        default_value = default_value or "nullable float"
-        return fields.Float(default=default_value, required=is_required)
+        return fields.Float(**meta_data)
     elif field_type == datetime:
-        default_value = default_value or datetime.now()
-        return fields.DateTime(default=default_value, required=is_required)
+        return fields.DateTime(**meta_data)
     elif issubclass(field_type, Enum):
-        default_value = default_value.value if default_value else "nullable enum"
-        return fields.String(default=default_value, required=is_required)
+        return fields.String(**meta_data)
     else:
-        return fields.Raw(required=is_required)
+        return fields.Raw(**meta_data)
 
 
 def convertibleclass_to_namespace_model(cls, namespace, model_name: str):
