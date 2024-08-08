@@ -10,7 +10,7 @@ DEFAULT_MAPPING = {
     "str": "nullable string",
     "int": "nullable integer",
     "float": "nullable float",
-    "datetime": "nullable datetime",
+    "datetime": None,
     "Enum": "nullable enum"
 }
 
@@ -33,7 +33,7 @@ def get_restx_field(field_type, is_required, default_value):
     elif field_type == str:
         return fields.String(**meta_data)
     elif field_type == int:
-        return fields.String(**meta_data)
+        return fields.Integer(**meta_data)
     elif field_type == float:
         return fields.Float(**meta_data)
     elif field_type == datetime:
