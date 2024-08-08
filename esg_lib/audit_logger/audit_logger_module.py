@@ -110,5 +110,5 @@ class AuditBlueprint(Blueprint):
             "new_value": new_value,
             "created_on": datetime.utcnow()
         }
-        action = AuditLog(**audit_log)
+        action = AuditLog.from_dict(audit_log)
         action.save()
