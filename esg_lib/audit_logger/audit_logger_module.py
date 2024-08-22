@@ -42,7 +42,7 @@ class AuditBlueprint(Blueprint):
         table_name = g.get("table_name")
         endpoint = request.path
 
-        if not table_name or table_name == AUDIT_COLLECTION_NAME or endpoint in IGNORE_PATHS:
+        if not table_name or table_name == AUDIT_COLLECTION_NAME or endpoint in IGNORE_PATHS or "swagger" in endpoint:
             return response
 
         primary_key = PRIMARY_KEY_MAPPING.get(table_name, "name")
