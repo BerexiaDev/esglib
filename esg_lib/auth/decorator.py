@@ -8,7 +8,7 @@ from esg_lib.auth.auth_helper import AuthHelper
 def token_required(f):
     @wraps(f)
     def decorated_function(*args, **kwargs):
-        if request.path in IGNORE_PATHS:
+        if request.path in IGNORE_PATHS or "swagger" in request.path:
             return f(*args, **kwargs)
         try:
             # To validate external users token
