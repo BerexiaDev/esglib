@@ -15,7 +15,7 @@ PRIMARY_KEY_MAPPING = {
     "bilan_factor": "type_emission.large_name",
     "form_checks": "technical_check",
     "notifications": "content",
-    "users": "email",
+    "users": "user.mail",
     "ref_sectors": "label",
     "group_entities": "label",
     "group_zones": "label",
