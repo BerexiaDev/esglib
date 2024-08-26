@@ -9,6 +9,6 @@ def catch_exceptions(func):
             return func(*args, **kwargs)
         except Exception as e:
             traceback.print_exc()
-            return {"status": "fail", "message": "fail_message.internal_error"}, 500
+            return {"status": "fail", "message": str(e)}, 500
 
     return wrapper
