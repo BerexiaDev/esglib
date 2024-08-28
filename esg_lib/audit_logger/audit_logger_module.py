@@ -7,7 +7,8 @@ from esg_lib.constants import IGNORE_PATHS
 
 
 SUCCESS_STATUS_CODES = [200, 201, 204]
-DEFAULT_LOG_METHODS = ["GET", "POST", "PUT", "DELETE", "PATCH"]
+DEFAULT_LOG_METHODS = ["POST", "PUT", "DELETE", "PATCH"]
+# DEFAULT_LOG_METHODS = ["GET", "POST", "PUT", "DELETE", "PATCH"]
 PRIMARY_KEY_MAPPING = {
     "target_settings": "action",
     "attachments": "filename",
