@@ -18,8 +18,6 @@ PRIMARY_KEY_MAPPING = {
     "notifications": "content",
     "users": "email",
     "ref_sectors": "label",
-    "group_entities": "label",
-    "group_zones": "label",
     "entity_domaines": "h1"
 }
 AUDIT_COLLECTION_NAME = "audit"
