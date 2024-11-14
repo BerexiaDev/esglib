@@ -1,0 +1,7 @@
+from enum import Enum
+
+class UserRole(Enum):
+    ESG_ADMIN = "ESG_ADMIN"
+    ESG_APPROVER = "ESG_APPROVER"
+    ESG_CONTRIBUTOR = "ESG_CONTRIBUTOR"
+    ESG_READONLY = "ESG_READONLY"
