@@ -36,6 +36,7 @@ class Document:
         kwargs = kwargs or {}
         items = [{"_id": generate_id(), **item, **kwargs} for item in items]
         self.db().insert_many(items)
+        return items
 
     def load(self, query=None):
         if not query:
