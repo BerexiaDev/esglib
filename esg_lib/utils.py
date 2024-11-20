@@ -1,5 +1,6 @@
 import uuid
-
+import inject
+from flask_pymongo import PyMongo
 
 def generate_id():
     return uuid.uuid4().hex.upper()
@@ -103,3 +104,98 @@ def create_reference_lookups(nested_fields: dict) -> list:
                 }
             )
     return pipeline
+
+
+
+def fetch_objectives_with_details(
+        objective_ids:str,
+        objective_table="objectives",
+        engagement_table="engagements",
+        axe_table="axes",
+    ) -> dict:
+    """
+    Retrieves a list of objectives by their IDs, along with related engagement 
+    and axe details, formatted as a dictionary.
+
+    Args:
+        objective_ids (list): List of objective IDs to retrieve.
+        objective_table (str): Name of the objectives collection in the database. 
+                               Defaults to "objectives".
+        engagement_table (str): Name of the engagements collection in the database. 
+                                Defaults to "engagements".
+        axe_table (str): Name of the axes collection in the database. 
+                         Defaults to "axes".
+
+    Returns:
+        dict: A dictionary containing the objectives with engagement and axe details.
+        
+    Example:
+        >>> fetch_objectives_with_details(["1D7258ECA93B45D9B2E701B071E65DF2", "949BDE53560B454D8F7B039A08B2A10F"])
+        {
+            "1D7258ECA93B45D9B2E701B071E65DF2":{
+                "id":"1D7258ECA93B45D9B2E701B071E65DF2",
+                "name":"obj1",
+                "engagement":{
+                    "id":"AF9B5C8F2F994AD39848AA483F8A27F9",
+                    "name":"eng1"
+                },
+                "axe":{
+                    "id":"31D95D95B03F43C5A0F235A354525D53",
+                    "name":"ax1"
+                }
+            },
+            "949BDE53560B454D8F7B039A08B2A10F":{
+                "id":"949BDE53560B454D8F7B039A08B2A10F",
+                "name":"obj2",
+                "engagement":{
+                    "id":"079C9B751C464A7984C4E1210EA7EA8C",
+                    "name":"eng2"
+                },
+                "axe":{
+                    "id":"20D7ADC5B53F4466B0063A018A2B2696",
+                    "name":"ax2"
+                }
+            }
+        }  
+    """
+    db = inject.instance(PyMongo).db
+    objectives_collection = db[objective_table]
+    engagements_collection = db[engagement_table]
+    axes_collection = db[axe_table]
+
+    objectives = list(objectives_collection.find({"_id": {"$in": objective_ids}}))
+
+    engagement_ids = {obj["engagement"] for obj in objectives if "engagement" in obj}
+    axe_ids = {obj["axe"] for obj in objectives if "axe" in obj}
+
+    engagements = list(engagements_collection.find({"_id": {"$in": list(engagement_ids)}}))
+    axes = list(axes_collection.find({"_id": {"$in": list(axe_ids)}}))
+
+    engagement_lookup = {eng["_id"]: eng for eng in engagements}
+    axe_lookup = {ax["_id"]: ax for ax in axes}
+
+    return {
+        obj["_id"]: {
+            "id": obj["_id"],
+            "name": obj.get("name"),
+            "engagement": (
+                {
+                    "id": obj["engagement"],
+                    "name": engagement_lookup.get(obj["engagement"], {}).get(
+                        "name"
+                    ),
+                }
+                if "engagement" in obj
+                else None
+            ),
+            "axe": (
+                {
+                    "id": obj["axe"],
+                    "name": axe_lookup.get(obj["axe"], {}).get("name"),
+                }
+                if "axe" in obj
+                else None
+            ),
+        }
+        for obj in objectives
+    }
