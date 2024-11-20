@@ -133,26 +133,26 @@ def fetch_objectives_with_details(
         >>> fetch_objectives_with_details(["1D7258ECA93B45D9B2E701B071E65DF2", "949BDE53560B454D8F7B039A08B2A10F"])
         {
             "1D7258ECA93B45D9B2E701B071E65DF2":{
-                "id":"1D7258ECA93B45D9B2E701B071E65DF2",
+                "_id":"1D7258ECA93B45D9B2E701B071E65DF2",
                 "name":"obj1",
                 "engagement":{
-                    "id":"AF9B5C8F2F994AD39848AA483F8A27F9",
+                    "_id":"AF9B5C8F2F994AD39848AA483F8A27F9",
                     "name":"eng1"
                 },
                 "axe":{
-                    "id":"31D95D95B03F43C5A0F235A354525D53",
+                    "_id":"31D95D95B03F43C5A0F235A354525D53",
                     "name":"ax1"
                 }
             },
             "949BDE53560B454D8F7B039A08B2A10F":{
-                "id":"949BDE53560B454D8F7B039A08B2A10F",
+                "_id":"949BDE53560B454D8F7B039A08B2A10F",
                 "name":"obj2",
                 "engagement":{
-                    "id":"079C9B751C464A7984C4E1210EA7EA8C",
+                    "_id":"079C9B751C464A7984C4E1210EA7EA8C",
                     "name":"eng2"
                 },
                 "axe":{
-                    "id":"20D7ADC5B53F4466B0063A018A2B2696",
+                    "_id":"20D7ADC5B53F4466B0063A018A2B2696",
                     "name":"ax2"
                 }
             }
@@ -176,11 +176,11 @@ def fetch_objectives_with_details(
 
     return {
         obj["_id"]: {
-            "id": obj["_id"],
+            "_id": obj["_id"],
             "name": obj.get("name"),
             "engagement": (
                 {
-                    "id": obj["engagement"],
+                    "_id": obj["engagement"],
                     "name": engagement_lookup.get(obj["engagement"], {}).get(
                         "name"
                     ),
@@ -190,7 +190,7 @@ def fetch_objectives_with_details(
             ),
             "axe": (
                 {
-                    "id": obj["axe"],
+                    "_id": obj["axe"],
                     "name": axe_lookup.get(obj["axe"], {}).get("name"),
                 }
                 if "axe" in obj
