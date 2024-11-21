@@ -6,42 +6,52 @@ def generate_id():
     return uuid.uuid4().hex.upper()
 
 
-def build_advanced_filter(filters: dict) -> dict:
+def build_advanced_filter(filters: dict, search_key: str = "name") -> dict:
     """
-    Build an advanced filter dictionary for MongoDB queries.
+    Constructs a MongoDB query filter based on the provided filter criteria.
 
     Args:
-        filters (dict): A dictionary containing the filters.
+        filters (dict): A dictionary of filters where:
+            - For exact matches, provide a single value (e.g., {"status": "active"}).
+            - For range filtering, provide a tuple with two values (e.g., {"price": (100, 500)}).
+            - For "in" filtering, provide a list of values (e.g., {"tags": ["new", "sale"]}).
+        search_key (str, optional): A key in `filters` for which a case-insensitive
+            substring match will be applied. If `search_key` is provided, its value
+            will be treated as a regular expression.
 
     Returns:
         dict: A MongoDB-compatible filter dictionary.
 
     Example:
         >>> filters = {
-        ...     "status": "active",        # String exact match
-        ...     "price": (100, 500),       # Range filter ($100 to $500)
-        ...     "tags": ["new", "sale"],   # "In" filter
-        ...     "stock": 20                # Exact match
+        ...     "status": "active",       # Exact match
+        ...     "price": (100, 500),     # Range filter
+        ...     "tags": ["new", "sale"], # "In" filter
+        ...     "stock": 20              # Exact match
         ... }
-        >>> build_advanced_filter(filters)
+        >>> build_advanced_filter(filters, search_key="status")
         {
-            "status": "active",
+            "status": {"$regex": "active", "$options": "i"},
             "price": {"$gte": 100, "$lte": 500},
             "tags": {"$in": ["new", "sale"]},
             "stock": 20
         }
     """
     query = {}
+
     for key, value in filters.items():
-        if isinstance(value, tuple) and len(value) == 2:
-            # For range filters (e.g., price between two values)
+        if key == search_key:
+            query[key] = {"$regex": value, "$options": "i"}
+
+        elif isinstance(value, tuple) and len(value) == 2:
             query[key] = {"$gte": value[0], "$lte": value[1]}
+
         elif isinstance(value, list):
-            # For "in" type filters
             query[key] = {"$in": value}
+
         else:
-            # Default exact match
             query[key] = value
+
     return query
 
 
