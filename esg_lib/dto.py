@@ -78,7 +78,7 @@ class AuditDto:
 class ObjectiveReferenceDto:
     api = Namespace("Objective Reference")
 
-    objective_reference = api.model(
+    data = api.model(
         "objective",
         {
             "id": fields.String(required=True),
