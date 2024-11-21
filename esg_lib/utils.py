@@ -29,9 +29,9 @@ def build_advanced_filter(filters: dict, search_key: str = "name") -> dict:
         ...     "tags": ["new", "sale"], # "In" filter
         ...     "stock": 20              # Exact match
         ... }
-        >>> build_advanced_filter(filters, search_key="status")
+        >>> build_advanced_filter(filters, search_key="name")
         {
-            "status": {"$regex": "active", "$options": "i"},
+            "name": {"$regex": "John", "$options": "i"},
             "price": {"$gte": 100, "$lte": 500},
             "tags": {"$in": ["new", "sale"]},
             "stock": 20
@@ -40,6 +40,7 @@ def build_advanced_filter(filters: dict, search_key: str = "name") -> dict:
     query = {}
 
     for key, value in filters.items():
+        
         if key == search_key:
             query[key] = {"$regex": value, "$options": "i"}
 
