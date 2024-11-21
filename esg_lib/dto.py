@@ -73,3 +73,17 @@ class AuditDto:
             "content": fields.List(fields.Nested(audit_info), skip_none=True),
         },
     )
+
+
+class ObjectiveReferenceDto:
+    api = Namespace("Objective Reference")
+
+    objective_reference = api.model(
+        "objective",
+        {
+            "id": fields.String(required=True),
+            "name": fields.String(required=True),
+            "engagement": fields.Raw(),
+            "axe": fields.Raw(),
+        },
+    )
