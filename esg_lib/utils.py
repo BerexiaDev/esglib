@@ -2,6 +2,7 @@ import uuid
 import inject
 from flask_pymongo import PyMongo
 
+
 def generate_id():
     return uuid.uuid4().hex.upper()
 
@@ -40,7 +41,7 @@ def build_advanced_filter(filters: dict, search_key: str = "name") -> dict:
     query = {}
 
     for key, value in filters.items():
-        
+
         if key == search_key:
             query[key] = {"$regex": value, "$options": "i"}
 
@@ -117,29 +118,28 @@ def create_reference_lookups(nested_fields: dict) -> list:
     return pipeline
 
 
-
 def fetch_objectives_with_details(
-        objective_ids:str,
-        objective_table="objectives",
-        engagement_table="engagements",
-        axe_table="axes",
-    ) -> dict:
+    objective_ids: str,
+    objective_table="objectives",
+    engagement_table="engagements",
+    axe_table="axes",
+) -> dict:
     """
-    Retrieves a list of objectives by their IDs, along with related engagement 
+    Retrieves a list of objectives by their IDs, along with related engagement
     and axe details, formatted as a dictionary.
 
     Args:
         objective_ids (list): List of objective IDs to retrieve.
-        objective_table (str): Name of the objectives collection in the database. 
+        objective_table (str): Name of the objectives collection in the database.
                                Defaults to "objectives".
-        engagement_table (str): Name of the engagements collection in the database. 
+        engagement_table (str): Name of the engagements collection in the database.
                                 Defaults to "engagements".
-        axe_table (str): Name of the axes collection in the database. 
+        axe_table (str): Name of the axes collection in the database.
                          Defaults to "axes".
 
     Returns:
         dict: A dictionary containing the objectives with engagement and axe details.
-        
+
     Example:
         >>> fetch_objectives_with_details(["1D7258ECA93B45D9B2E701B071E65DF2", "949BDE53560B454D8F7B039A08B2A10F"])
         {
@@ -167,7 +167,7 @@ def fetch_objectives_with_details(
                     "name":"ax2"
                 }
             }
-        }  
+        }
     """
     db = inject.instance(PyMongo).db
     objectives_collection = db[objective_table]
@@ -179,7 +179,9 @@ def fetch_objectives_with_details(
     engagement_ids = {obj["engagement"] for obj in objectives if "engagement" in obj}
     axe_ids = {obj["axe"] for obj in objectives if "axe" in obj}
 
-    engagements = list(engagements_collection.find({"_id": {"$in": list(engagement_ids)}}))
+    engagements = list(
+        engagements_collection.find({"_id": {"$in": list(engagement_ids)}})
+    )
     axes = list(axes_collection.find({"_id": {"$in": list(axe_ids)}}))
 
     engagement_lookup = {eng["_id"]: eng for eng in engagements}
@@ -192,9 +194,7 @@ def fetch_objectives_with_details(
             "engagement": (
                 {
                     "id": obj["engagement"],
-                    "name": engagement_lookup.get(obj["engagement"], {}).get(
-                        "name"
-                    ),
+                    "name": engagement_lookup.get(obj["engagement"], {}).get("name"),
                 }
                 if "engagement" in obj
                 else None
@@ -210,3 +210,15 @@ def fetch_objectives_with_details(
         }
         for obj in objectives
     }
+
+
+def inject_objectives(objects: list) -> list:
+    """
+    Injects engagement and axe details into a list of objects.
+    Note: Objects must have an "objective" attribute containing the objective ID.
+    """
+    objectives_ids = [obj.objective for obj in objects]
+    objectives = fetch_objectives_with_details(objectives_ids)
+    for obj in objects:
+        obj.objective = objectives.get(obj.objective)
+    return objects
