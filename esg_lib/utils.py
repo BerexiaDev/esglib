@@ -1,6 +1,4 @@
 import uuid
-import inject
-from flask_pymongo import PyMongo
 
 
 def generate_id():
@@ -169,10 +167,11 @@ def fetch_objectives_with_details(
             }
         }
     """
-    db = inject.instance(PyMongo).db
-    objectives_collection = db[objective_table]
-    engagements_collection = db[engagement_table]
-    axes_collection = db[axe_table]
+    from esg_lib.document import Document
+
+    objectives_collection = Document.get_collection(objective_table)
+    engagements_collection = Document.get_collection(engagement_table)
+    axes_collection = Document.get_collection(axe_table)
 
     objectives = list(objectives_collection.find({"_id": {"$in": objective_ids}}))
 
