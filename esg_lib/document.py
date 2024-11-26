@@ -22,9 +22,13 @@ class Document:
     def id(self, value):
         self._id = value
 
-    def db(self):
+    @classmethod
+    def get_collection(cls, collection_name):
         mongo = inject.instance(PyMongo)
-        return mongo.db[self.__TABLE__]
+        return mongo.db[collection_name]
+
+    def db(self):
+        return self.get_collection(self.__TABLE__)
 
     def save(self):
         if not self._id:
