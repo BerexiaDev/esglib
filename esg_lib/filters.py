@@ -1,3 +1,20 @@
+from esg_lib.document import Document
+
+def get_id_by_name(collection, name_field, id_field, name_value):
+    """
+    Fetches the ID corresponding to a given name from a MongoDB collection.
+    """
+    result = collection.find_one(
+        {name_field: {"$regex": f"^{name_value}$", "$options": "i"}},
+        {id_field: 1}
+    )
+
+    if result:
+        return result.get(id_field)
+
+def get_collection(field_code):
+    collection_name = f"{field_code}s"
+    return Document.get_collection(collection_name)
 
 def build_filters(filters):
     """
@@ -27,6 +44,14 @@ def build_filters(filters):
         if value != 0 and not value:  # Allow 0 as a valid value
             raise ValueError("No value provided.")
 
+        # Handle cases where the search is done by name, but the ID is stored in the database
+        if table_name == "forms" and field_code in ["axe", "engagement", "objective"]:
+            collection = get_collection(field_code)
+            value = get_id_by_name(collection, "name", "_id", value)
+
+            mongo_query[field_code] = value
+            continue
+
         # Handle date-specific operators
         if operator in ["BEFORE", "AFTER"]:
             if not isinstance(value, (str)):
@@ -53,3 +78,4 @@ def build_filters(filters):
             raise ValueError(f"Unsupported operator: {operator}")
 
     return mongo_query
+
