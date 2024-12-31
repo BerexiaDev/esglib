@@ -14,6 +14,5 @@ class AuthHelper:
         if not user:
             return {"status": "fail", "message": "No such user with the provided email"}, 404
 
-        g.auth_user = user
-
+        g.auth_user = {**user, "principal_email": user.email if user.is_principal else  user.principal_email}
         return user, 200
