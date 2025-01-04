@@ -4,6 +4,7 @@ from esg_lib.auth.external_auth import ExternalAuth
 from esg_lib.constants import IGNORE_PATHS
 from esg_lib.auth.azure_ad_auth import AzureADAuth
 from esg_lib.auth.auth_helper import AuthHelper
+from esg_lib.common import UserRole
 
 def token_required(f):
     @wraps(f)
@@ -20,6 +21,8 @@ def token_required(f):
                     # raise Exception("Invalid Token")
                     return {"status": "fail", "message": "Invalid Token"}, 401
 
+                g.auth_user = {"principal_email": decoded_token["email"]}
+                request.args["user_role"] = UserRole.ESG_EXTERNAL_CONTRIBUTOR.value
                 return f(*args, **kwargs)
 
 
@@ -40,7 +43,6 @@ def token_required(f):
                 
                 # Ensure required_roles is not an empty list
                 if required_roles:
-
                     user_role = data['role']
                     if not user_role:
                         return {'status': 'fail','message': 'User role not found.'}, 403
