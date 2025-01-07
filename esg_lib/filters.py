@@ -5,7 +5,8 @@ collections = {
     "axe": "axes",
     "engagement": "engagements",
     "objective": "objectives",
-    "entity": "entities"
+    "entity": "entities",
+    "group": "groups",
 }
 
 def get_id_by_name(collection, name_field, id_field, name_value):
@@ -53,14 +54,7 @@ def build_filters(filters):
             raise ValueError("No value provided.")
 
         # Handle cases where the search is done by name, but the ID is stored in the database
-        if table_name in ["forms", "projects"] and field_code in ["axe", "engagement", "objective"]:
-            collection = get_collection(field_code)
-            value = get_id_by_name(collection, "name", "_id", value)
-
-            mongo_query[field_code] = value
-            continue
-
-        if table_name == "projects" and field_code == "entity":
+        if table_name in ["forms", "projects", "permanent_actions"] and field_code in ["axe", "engagement", "objective", "entity", "group"]:
             collection = get_collection(field_code)
             value = get_id_by_name(collection, "name", "_id", value)
 
