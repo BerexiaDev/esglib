@@ -1,3 +1,4 @@
+import re
 from esg_lib.document import Document
 
 def get_id_by_name(collection, name_field, id_field, name_value):
@@ -69,7 +70,10 @@ def build_filters(filters):
         elif operator == "CONTAINS":
             if not isinstance(value, str):
                 raise ValueError("Value for 'CONTAINS' operator must be a string.")
-            mongo_query[field_code] = {"$regex": value, "$options": "i"}  
+            mongo_query[field_code] = {"$regex": value, "$options": "i"} 
+        elif operator == "IN":
+            regex_query = [re.compile(v, re.IGNORECASE) for v in value]
+            mongo_query[field_code] = {"$in": regex_query} 
         elif operator == "GREATER THAN":
             mongo_query[field_code] = {"$gt": value}
         elif operator == "LESS THAN":
