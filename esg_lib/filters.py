@@ -9,17 +9,17 @@ collections = {
     "group": "groups",
 }
 
-def get_id_by_name(collection, name_field, id_field, name_value):
+def get_ids_by_name(collection, name_field, id_field, name_value):
     """
     Fetches the ID corresponding to a given name from a MongoDB collection.
     """
-    result = collection.find_one(
-        {name_field: {"$regex": f"^{name_value.strip()}$", "$options": "i"}},
+    results = collection.find(
+        {name_field: {"$regex": f"{name_value.strip()}", "$options": "i"}},
         {id_field: 1}
     )
 
-    if result:
-        return result.get(id_field)
+    if results:
+        return [r[id_field] for r in results]
 
 def get_collection(field_code):
     collection_name = collections.get(field_code, field_code)
@@ -56,9 +56,8 @@ def build_filters(filters):
         # Handle cases where the search is done by name, but the ID is stored in the database
         if table_name in ["forms", "projects", "permanent_actions"] and field_code in ["axe", "engagement", "objective", "entity", "group"]:
             collection = get_collection(field_code)
-            value = get_id_by_name(collection, "name", "_id", value)
-
-            mongo_query[field_code] = value
+            ids_value = get_ids_by_name(collection, "name", "_id", value)
+            mongo_query[field_code] = {"$in": ids_value} 
             continue
 
         # Handle date-specific operators
