@@ -60,6 +60,11 @@ def build_filters(filters):
             mongo_query[field_code] = {"$in": ids_value} 
             continue
 
+        if table_name == "users" and field_code == "has_backup":
+            if table_name == "users" and field_code == "has_backup":
+                mongo_query["backup_id"] = {"$ne": None} if value else None
+                continue
+
         # Handle date-specific operators
         if operator in ["BEFORE", "AFTER"]:
             if not isinstance(value, (str)):
