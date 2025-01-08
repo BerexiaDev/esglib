@@ -1,27 +1,18 @@
 from esg_lib.audit_logger.models.AuditLog import AuditLog
 from esg_lib.decorators import catch_exceptions
 from esg_lib.paginator import Paginator
+from esg_lib.filters import build_filters
 
 
 @catch_exceptions
-def get_audit_logs_paginated(args):
-    query = {}
+def get_audit_logs_paginated(args, data):
+    query = build_filters(data.get("filters", []))
+    query.update({"action": {"$ne": "RETRIEVE"}})
 
-    table_names = args.get("table_names")
-    actions = args.get("actions")
     page = args.get("page")
     per_page = args.get("size")
     sort_by = args.get("sort_key", "id")
     sort_order = args.get("sort_order", -1)
-
-    if "RETRIEVE" not in actions:
-        query.update({"action": {"$ne": "RETRIEVE"}})
-
-    if actions:
-        query.update({"action": {"$in": actions.split(',')}})
-
-    if table_names:
-        query.update({"collection": {"$in": table_names.split(',')}})
 
     collection = AuditLog().db()
     skip = max((page - 1) * per_page, 0)
