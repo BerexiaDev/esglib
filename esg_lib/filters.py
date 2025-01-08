@@ -54,7 +54,7 @@ def build_filters(filters):
             raise ValueError("No value provided.")
 
         # Handle cases where the search is done by name, but the ID is stored in the database
-        if table_name in ["forms", "projects", "permanent_actions"] and field_code in ["axe", "engagement", "objective", "entity", "group"]:
+        if table_name in ["forms", "projects", "permanent_actions", "highlighted_actions"] and field_code in ["axe", "engagement", "objective", "entity", "group"]:
             collection = get_collection(field_code)
             ids_value = get_ids_by_name(collection, "name", "_id", value)
             mongo_query[field_code] = {"$in": ids_value} 
