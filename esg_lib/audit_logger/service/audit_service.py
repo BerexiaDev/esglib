@@ -7,7 +7,9 @@ from esg_lib.filters import build_filters
 @catch_exceptions
 def get_audit_logs_paginated(args, data):
     query = build_filters(data.get("filters", []))
-    query.update({"action": {"$ne": "RETRIEVE"}})
+
+    if "action" not in query:
+        query["action"] = {"$ne": "RETRIEVE"}
 
     page = args.get("page")
     per_page = args.get("size")
