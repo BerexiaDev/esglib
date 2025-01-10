@@ -1,6 +1,7 @@
 from flask_restx import Resource
 from flask import request
-from esg_lib.dto import CommonDto
+
+# from esg_lib.dto import CommonDto
 
 from esg_lib.audit_logger.service.audit_service import get_audit_logs_paginated
 from esg_lib.dto import AuditDto
@@ -13,7 +14,7 @@ audit_pagination = AuditDto.audit_pagination
 @api.route("/search")
 class AuditSearch(Resource):
     @api.doc("Get Audit logs")
-    @api.expect(CommonDto.search_dto, validate=True)
+    # @api.expect(CommonDto.search_dto, validate=True)
     @api.marshal_list_with(audit_pagination, skip_none=True)
     @api.response(200, "Audit log successfully retrieved paginated.")
     def post(self):

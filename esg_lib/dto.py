@@ -75,10 +75,10 @@ class AuditDto:
     )
 
 
-class CommonDto:
-    api = Namespace("Common")
+# class CommonDto:
+#     api = Namespace("Common")
 
-    search_dto = api.model(
-        "Search criteria",
-        {"filters": fields.List(fields.Raw(), required=True)},
-    )
+#     search_dto = api.model(
+#         "Search criteria",
+#         {"filters": fields.List(fields.Raw(), required=True)},
+#     )
