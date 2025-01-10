@@ -73,12 +73,3 @@ class AuditDto:
             "content": fields.List(fields.Nested(audit_info), skip_none=True),
         },
     )
-
-
-# class CommonDto:
-#     api = Namespace("Common")
-
-#     search_dto = api.model(
-#         "Search criteria",
-#         {"filters": fields.List(fields.Raw(), required=True)},
-#     )
