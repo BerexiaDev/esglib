@@ -63,8 +63,8 @@ def build_filters(filters):
             "projects",
             "permanent_actions",
             "highlighted_actions",
-            "campaings",
-            "carbon_campaings",
+            "campaigns",
+            "carbon_campaigns",
         ] and field_code in [
             "axe",
             "engagement",
