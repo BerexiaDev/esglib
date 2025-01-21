@@ -1,5 +1,4 @@
 import uuid
-from esg_lib.document import Document
 
 
 def generate_id():
@@ -224,14 +223,12 @@ def inject_objectives(objects: list) -> list:
     return objects
 
 
-def load_entities(data):
+def load_entities(data, collection):
     entity_ids = set()
     for doc in data:
         entity_ids.update(doc.entities or [])
 
-    entities = list(
-        Document.get_collection("entities").find({"_id": {"$in": list(entity_ids)}})
-    )
+    entities = list(collection.find({"_id": {"$in": list(entity_ids)}}))
 
     entity_dict = {entity["_id"]: entity for entity in entities}
 
