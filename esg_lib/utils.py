@@ -1,5 +1,5 @@
 import uuid
-from document import Document
+from ..esg_lib.document import Document
 
 
 def generate_id():
