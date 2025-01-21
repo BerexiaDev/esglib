@@ -236,3 +236,4 @@ def load_entities(data, collection):
         doc.entities_list = [
             entity_dict.get(entity_id) for entity_id in doc.entities or []
         ]
+    return data
