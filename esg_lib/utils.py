@@ -1,4 +1,5 @@
 import uuid
+from document import Document
 
 
 def generate_id():
@@ -221,3 +222,20 @@ def inject_objectives(objects: list) -> list:
     for obj in objects:
         obj.objective = objectives.get(obj.objective)
     return objects
+
+
+def load_entities(data):
+    entity_ids = set()
+    for doc in data:
+        entity_ids.update(doc.entities or [])
+
+    entities = list(
+        Document.get_collection("entities").find({"_id": {"$in": list(entity_ids)}})
+    )
+
+    entity_dict = {entity["_id"]: entity for entity in entities}
+
+    for doc in data:
+        doc.entities_list = [
+            entity_dict.get(entity_id) for entity_id in doc.entities or []
+        ]
