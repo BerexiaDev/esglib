@@ -81,7 +81,7 @@ class AzureADAuth:
                     return rsa_key
             raise Exception("RSA key not found")
 
-        except Exception:
+        except Exception as e:
             traceback.print_exc()
             raise Exception(f"Failed to get RSA key: {str(e)}")
 
