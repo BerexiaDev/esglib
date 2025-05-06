@@ -68,11 +68,17 @@ class AzureADAuth:
 
     @classmethod
     def get_key(cls, kid):
+        refereshed = False
         for key in cls._instance.keys:
             if key["kid"] == kid:
                 return key
-        cls._instance.keys = cls._instance.fetch_public_keys()
-        return cls.get_key(kid)
+            
+        if not refereshed:
+            cls._instance.keys = cls._instance.fetch_public_keys()
+            return cls.get_key(kid)
+        
+        else:
+            raise Exception("RSA key not found")
     
     
     @classmethod
