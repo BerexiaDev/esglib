@@ -83,7 +83,7 @@ class AuditBlueprint(Blueprint):
                     if isinstance(new_data, list):
                         final_value = [get_primary_key_value(primary_key_splits, d) for d in new_data]
                         new_data = {
-                            "name": ",".join(final_value) if final_value else ""
+                            "name": ",".join(str(v) for v in final_value if v is not None) if final_value else ""
                         }
                     else:
                         primary_value = get_primary_key_value(primary_key_splits, new_data)
