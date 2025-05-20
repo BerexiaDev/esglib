@@ -22,8 +22,8 @@ class Document:
     def id(self, value):
         self._id = value
 
-    @classmethod
-    def get_collection(cls, collection_name):
+    @staticmethod
+    def get_collection(collection_name):
         mongo = inject.instance(PyMongo)
         return mongo.db[collection_name]
 
