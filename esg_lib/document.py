@@ -80,6 +80,18 @@ class Document:
         if query:
             cls().db().delete_many(query)
 
+    def find_one_and_update(self, filter, update, upsert=False, return_after=True):
+        """Atomic find-one-and-update on this collection -- a reusable primitive for
+        conditional claims (e.g. a distributed lock) and counters, where a plain update()
+        is not enough. Returns the matched document (post-update when return_after, else
+        pre-update), or None when nothing matched and upsert is False."""
+        return self.db().find_one_and_update(
+            filter,
+            update,
+            upsert=upsert,
+            return_document=ReturnDocument.AFTER if return_after else ReturnDocument.BEFORE,
+        )
+
     def update(self, data: dict):
         self.db().update_one({"_id": self._id}, {"$set": data})
         # for k, v in data.items():
