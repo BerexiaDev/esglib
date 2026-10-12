@@ -1,6 +1,7 @@
 import inject
 from flask_pymongo import PyMongo
 from flask import g
+from pymongo import ReturnDocument
 
 from esg_lib.utils import generate_id
 
