@@ -63,7 +63,7 @@ class ExternalAuth:
         except Exception as e:
             raise Exception(f"Unable to parse token: {str(e)}")
 
-        if decoded_token.get("type") != "session":
+        if decoded_token.get("type") == "session":
             raise Exception("Invalid token")
 
         return decoded_token
