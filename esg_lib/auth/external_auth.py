@@ -50,11 +50,20 @@ class ExternalAuth:
 
         token = cls._instance.get_token_auth_header()
         try:
-            decoded_token = jwt.decode(token, cls._instance.secret_key, algorithms=['HS256'])
-            return decoded_token
+            decoded_token = jwt.decode(
+                token,
+                cls._instance.secret_key,
+                algorithms=['HS256'],
+                options={"require": ["exp"]},
+            )
         except jwt.ExpiredSignatureError:
             raise Exception("Token has expired")
         except jwt.InvalidTokenError as e:
             raise Exception(f"Invalid token: {str(e)}")
         except Exception as e:
             raise Exception(f"Unable to parse token: {str(e)}")
+
+        if decoded_token.get("type") != "session":
+            raise Exception("Invalid token")
+
+        return decoded_token
